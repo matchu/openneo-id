@@ -1,7 +1,7 @@
 <?php
+require_once PWNAGE_ROOT.'/pwnage/lib/spyc.php';
+
 class Pwnage_UsersController extends PwnageCore_Controller {
-  static $valid_apps = array('impress'); // when more apps are needed, add to list
-  
   protected function __construct() {
     $this->addBeforeFilter(array('login', 'signup'), 'checkForSession');
     parent::__construct();
@@ -24,7 +24,7 @@ class Pwnage_UsersController extends PwnageCore_Controller {
     if(isset($this->post['user'])) {
       try {
         $user = Pwnage_User::findByLoginData($this->post['user']);
-        $this->authorizeAsUser($user);
+        $this->authorizeAsUser($user->getRemoteAuthorizationData());
       } catch(Pwnage_LoginUsernameNotFound $e) {
         $this->set('login_error', 'username');
       } catch(Pwnage_LoginPasswordIncorrect $e) {
@@ -35,30 +35,43 @@ class Pwnage_UsersController extends PwnageCore_Controller {
   }
   
   public function welcome() {
-    if(isset($this->get['app']) && isset($this->get['destination'])) {
-      $app = $this->get['app'];
-      $destination = $this->get['destination'];
-      if(in_array($app, self::$valid_apps)) {
-        $_SESSION['app'] = $app;
-        $_SESSION['destination'] = $this->get['destination'];
-        $this->redirectToRoute('login');
-      }
+    if($this->initSession()) {
+      $this->redirectToRoute('login');
     }
   }
   
   private function authorizeAsUser($user) {
-    //TODO: add callback to relevant app
-    $path = $_SESSION['destination'];
-    if(substr($path, 0, 1) != '/') $path = '/'.$path;
-    $location = 'http://'.$_SESSION['app'].'.openneo.net'.$path;
-    session_destroy();
-    header("Location: $location");
+    $auth = $this->getOpenneoAuth();
+    try {
+      $auth->sendUserData($user);
+      $this->redirect($auth->redirect(OpenneoAuth::returnUrl));
+    } catch(OpenneoAuth_RemoteAuthorizationError $e) {
+      $this->setFlash('users/remote_authorization_error', 'error');
+    }
   }
   
   protected function checkForSession() {
-    if(!isset($_SESSION['app']) || !isset($_SESSION['destination'])) {
-      $this->redirectToRoute('root');
+    $auth = $this->getOpenneoAuth();
+    if(!$auth->sessionExists()) {
+      if($this->initSession()) {
+        $this->redirectToRoute('login');
+      } else {
+        $this->redirectToRoute('root');
+      }
     }
+  }
+  
+  private function getOpenneoAuth() {
+    if(!isset($this->openneo_auth)) {
+      $this->openneo_auth = new OpenneoAuth(
+        Spyc::YAMLLoad(PWNAGE_ROOT.'/config/openneo_auth.yml')
+      );
+    }
+    return $this->openneo_auth;
+  }
+  
+  private function initSession() {
+    return $this->getOpenneoAuth()->initSession($this->get);
   }
 }
 ?>

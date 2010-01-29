@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.22, created on 2010-01-29 16:12:29
+<?php /* Smarty version 2.6.22, created on 2010-01-29 16:33:46
          compiled from users/login.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'path', 'users/login.tpl', 12, false),array('modifier', 'escape', 'users/login.tpl', 28, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('insert', 'flashes', 'users/login.tpl', 9, false),array('function', 'path', 'users/login.tpl', 13, false),array('modifier', 'escape', 'users/login.tpl', 29, false),)), $this); ?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -10,6 +10,9 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'path', 'use
   </head>
   <body>
     <h1>OpenNeo ID</h1>
+    <?php require_once(SMARTY_CORE_DIR . 'core.run_insert_handler.php');
+echo smarty_core_run_insert_handler(array('args' => array('name' => 'flashes')), $this); ?>
+
     <p>
       Log in with your OpenNeo username and password below.
     </p>

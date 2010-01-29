@@ -40,6 +40,12 @@ class Pwnage_User extends PwnageCore_DbObject {
     return hash_hmac('sha256', $password, $this->secret);
   }
   
+  public function getRemoteAuthorizationData() {
+    return array(
+      'name' => $this->name
+    );
+  }
+  
   public function isValid() {
     return parent::isValid(self::$validations, self::$table);
   }
@@ -54,7 +60,7 @@ class Pwnage_User extends PwnageCore_DbObject {
   
   static function findByLoginData($data) {
     $user = self::first(array(
-      'select' => 'password_hash, secret',
+      'select' => 'password_hash, secret, name', // name for sending remote auth
       'where' => array('name = ?', $data['name'])
     ));
     if(!$user) {

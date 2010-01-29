@@ -6,6 +6,7 @@
   </head>
   <body>
     <h1>OpenNeo ID</h1>
+    {insert name=flashes}
     <p>
       Log in with your OpenNeo username and password below.
     </p>

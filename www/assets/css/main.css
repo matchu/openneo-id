@@ -43,3 +43,11 @@ ol.fields {
 input {
   padding: 3px;
 }
+
+.error {
+  background: #ffeeee;
+  border: 1px solid #cc0000;
+  color: #770000;
+  margin: .5em 0;
+  padding: .5em;
+}
