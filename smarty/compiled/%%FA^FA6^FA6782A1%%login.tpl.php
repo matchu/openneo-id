@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2010-01-24 23:07:48
+<?php /* Smarty version 2.6.22, created on 2010-01-29 16:12:29
          compiled from users/login.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('function', 'path', 'users/login.tpl', 12, false),array('modifier', 'escape', 'users/login.tpl', 28, false),)), $this); ?>
@@ -15,7 +15,7 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'path', 'use
     </p>
     <form action="<?php echo smarty_function_path(array('to' => 'login'), $this);?>
 " method="POST">
-<?php if ($this->_tpl_vars['login_error']): ?>
+<?php if (isset ( $this->_tpl_vars['login_error'] )): ?>
       <div class="form-errors">
         <h1>No luck!</h1>
 <?php if ($this->_tpl_vars['login_error'] == 'username'): ?>
@@ -32,11 +32,14 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'path', 'use
           <label for="name">Name</label>
           <input id="name" type="text" name="user[name]"
             value="<?php echo ((is_array($_tmp=$this->_tpl_vars['username'])) ? $this->_run_mod_handler('escape', true, $_tmp) : smarty_modifier_escape($_tmp)); ?>
-" />
+"
+            <?php if (empty ( $this->_tpl_vars['username'] ) || ( isset ( $this->_tpl_vars['login_error'] ) && $this->_tpl_vars['login_error'] == 'username' )): ?>autofocus <?php endif; ?>/>
         </li>
         <li>
           <label for="password">Password</label>
-          <input id="password" type="password" name="user[password]" />
+          <input id="password" type="password"
+            name="user[password]"
+            <?php if (isset ( $this->_tpl_vars['login_error'] ) && $this->_tpl_vars['login_error'] == 'password'): ?>autofocus <?php endif; ?>/>
         </li>
       </ol>
       <input type="submit" />

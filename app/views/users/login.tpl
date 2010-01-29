@@ -10,7 +10,7 @@
       Log in with your OpenNeo username and password below.
     </p>
     <form action="{path to=login}" method="POST">
-{if $login_error}
+{if isset($login_error)}
       <div class="form-errors">
         <h1>No luck!</h1>
 {if $login_error == 'username'}
@@ -25,11 +25,14 @@
         <li>
           <label for="name">Name</label>
           <input id="name" type="text" name="user[name]"
-            value="{$username|escape}" />
+            value="{$username|escape}"
+            {if empty($username) || (isset($login_error) && $login_error == 'username')}autofocus {/if}/>
         </li>
         <li>
           <label for="password">Password</label>
-          <input id="password" type="password" name="user[password]" />
+          <input id="password" type="password"
+            name="user[password]"
+            {if isset($login_error) && $login_error == 'password'}autofocus {/if}/>
         </li>
       </ol>
       <input type="submit" />
