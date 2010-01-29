@@ -1,0 +1,15 @@
+development:
+  type: mysql
+  host: localhost
+  port: 3306
+  database: openneo_id
+  user: openneo_id
+  password:
+  
+production:
+  type: mysql
+  host: localhost
+  port: 3306
+  database: openneo_id
+  user: openneo_id
+  password:

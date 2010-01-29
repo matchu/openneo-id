@@ -1,0 +1,45 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: sans-serif;
+  padding: 1em;
+}
+
+form, p, li, .form-errors {
+  margin-bottom: 1em;
+}
+
+h1 {
+  margin-bottom: .5em;
+}
+
+label {
+  float: left;
+  width: 10em;
+}
+
+ol.fields, .form-errors ul {
+  padding-left: 2em;
+}
+
+ol.fields {
+  list-style: none;
+}
+
+.form-errors {
+  border: 1px solid #ccc;
+  padding: 1em;
+  width: 20em;
+}
+
+.form-errors h1 {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+input {
+  padding: 3px;
+}
