@@ -24,7 +24,7 @@ class Pwnage_UsersController extends PwnageCore_Controller {
     if(isset($this->post['user'])) {
       try {
         $user = Pwnage_User::findByLoginData($this->post['user']);
-        $this->authorizeAsUser($user->getRemoteAuthorizationData());
+        $this->authorizeAsUser($user);
       } catch(Pwnage_LoginUsernameNotFound $e) {
         $this->set('login_error', 'username');
       } catch(Pwnage_LoginPasswordIncorrect $e) {
@@ -41,17 +41,17 @@ class Pwnage_UsersController extends PwnageCore_Controller {
   }
   
   private function authorizeAsUser($user) {
-    $auth = $this->getOpenneoAuth();
+    $auth = $this->getOpenneoAuthServer();
     try {
-      $auth->sendUserData($user);
-      $this->redirect($auth->redirect(OpenneoAuth::returnUrl));
-    } catch(OpenneoAuth_RemoteAuthorizationError $e) {
+      $auth->sendUserData($user->getRemoteAuthorizationData());
+      $this->redirect($auth->redirect(OpenneoAuthServer::returnUrl));
+    } catch(OpenneoAuthServer_RemoteAuthorizationError $e) {
       $this->setFlash('users/remote_authorization_error', 'error');
     }
   }
   
   protected function checkForSession() {
-    $auth = $this->getOpenneoAuth();
+    $auth = $this->getOpenneoAuthServer();
     if(!$auth->sessionExists()) {
       if($this->initSession()) {
         $this->redirectToRoute('login');
@@ -61,9 +61,9 @@ class Pwnage_UsersController extends PwnageCore_Controller {
     }
   }
   
-  private function getOpenneoAuth() {
+  private function getOpenneoAuthServer() {
     if(!isset($this->openneo_auth)) {
-      $this->openneo_auth = new OpenneoAuth(
+      $this->openneo_auth = new OpenneoAuthServer(
         Spyc::YAMLLoad(PWNAGE_ROOT.'/config/openneo_auth.yml')
       );
     }
@@ -71,7 +71,7 @@ class Pwnage_UsersController extends PwnageCore_Controller {
   }
   
   private function initSession() {
-    return $this->getOpenneoAuth()->initSession($this->get);
+    return $this->getOpenneoAuthServer()->initSession($this->get);
   }
 }
 ?>

@@ -42,6 +42,7 @@ class Pwnage_User extends PwnageCore_DbObject {
   
   public function getRemoteAuthorizationData() {
     return array(
+      'id' => $this->id,
       'name' => $this->name
     );
   }
@@ -55,12 +56,13 @@ class Pwnage_User extends PwnageCore_DbObject {
   }
   
   public function save() {
-    return parent::save(self::$table, self::$columns);
+    $id = parent::save(self::$table, self::$columns);
+    if($id) $this->id = $id;
   }
   
   static function findByLoginData($data) {
     $user = self::first(array(
-      'select' => 'password_hash, secret, name', // name for sending remote auth
+      'select' => 'password_hash, secret, name, id', // name, id for sending remote auth
       'where' => array('name = ?', $data['name'])
     ));
     if(!$user) {

@@ -1,5 +1,5 @@
 <?php
-class OpenneoAuth {
+class OpenneoAuthServer {
   const remoteBaseDomain = 'openneo.net';
   const remoteAuthorizePath = '/users/authorize';
   const sessionKey = 'openneo_auth_destination';
@@ -7,6 +7,7 @@ class OpenneoAuth {
   private $config;
   static $required_configs = array('valid_apps', 'secret');
   static $required_session_params = array('app', 'path', 'session_id');
+  static $required_user_attributes = array('id', 'name');
   
   public function __construct($config) {
     foreach(self::$required_configs as $required_config) {
@@ -57,12 +58,24 @@ class OpenneoAuth {
   }
   
   public function sendUserData($user_data) {
+    var_dump($user_data);
+    foreach(self::$required_user_attributes as $required_user_attribute) {
+      if(!isset($user_data[$required_user_attribute])) {
+        throw new OpenneoAuth_MissingUserDataError(
+          "\$$required_user_attribute is a required user attribute"
+        );
+      }
+    }
     $session_data = $this->getSessionData();
     $url = $this->getRemoteHost().self::remoteAuthorizePath;
-    $post_string = http_build_query(array(
+    $post_data = array(
       'session_id' => $session_data['session_id'],
-      'user' => $user_data
-    ));
+      'source' => $this->config['short_name'],
+      'user' => $user_data,
+    );
+    $post_data['signature'] =
+      OpenneoAuthSignatory::sign($post_data, $this->config['secret']);
+    $post_string = http_build_query($post_data);
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_HEADER, 0);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -75,6 +88,7 @@ class OpenneoAuth {
         "$url returned status ${info['http_code']}"
       );
     }
+    die($data);
   }
   
   public function sessionExists() {
@@ -86,6 +100,7 @@ class OpenneoAuth {
   }
 }
 
+class OpenneoAuth_MissingUserDataError extends Exception {}
 class OpenneoAuth_MissingConfigError extends Exception {}
 class OpenneoAuth_RemoteAuthorizationError extends Exception {}
 ?>
