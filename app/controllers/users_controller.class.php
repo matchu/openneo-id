@@ -71,7 +71,11 @@ class Pwnage_UsersController extends PwnageCore_Controller {
   }
   
   private function initSession() {
-    return $this->getOpenneoAuthServer()->initSession($this->get);
+    $auth_server = $this->getOpenneoAuthServer();
+    if($success = $auth_server->setParams($this->get)) {
+      $auth_server->initSession();
+    }
+    return $success;
   }
 }
 ?>

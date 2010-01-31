@@ -10,6 +10,11 @@
       Just tell us your preferred login details, and your e-mail address.
       That's all we need.
     </p>
+    <p>
+      Remember - <strong>do not use your Neopets password here!</strong>
+      We don't expect any security issues, but if anything happens, we want
+      there to be absolutely minimal risk.
+    </p>
     <form action="{path to=signup}" method="POST">
 {if isset($user) && !$user->isValid()}
       <div class="form-errors">

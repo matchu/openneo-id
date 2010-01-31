@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2010-01-29 16:33:46
+<?php /* Smarty version 2.6.22, created on 2010-01-30 13:44:23
          compiled from users/login.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('insert', 'flashes', 'users/login.tpl', 9, false),array('function', 'path', 'users/login.tpl', 13, false),array('modifier', 'escape', 'users/login.tpl', 29, false),)), $this); ?>

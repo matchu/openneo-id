@@ -1,7 +1,7 @@
-<?php /* Smarty version 2.6.22, created on 2010-01-28 21:24:18
+<?php /* Smarty version 2.6.22, created on 2010-01-30 13:43:41
          compiled from users/signup.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
-smarty_core_load_plugins(array('plugins' => array(array('function', 'path', 'users/signup.tpl', 13, false),array('modifier', 'escape', 'users/signup.tpl', 30, false),)), $this); ?>
+smarty_core_load_plugins(array('plugins' => array(array('function', 'path', 'users/signup.tpl', 18, false),array('modifier', 'escape', 'users/signup.tpl', 35, false),)), $this); ?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -13,6 +13,11 @@ smarty_core_load_plugins(array('plugins' => array(array('function', 'path', 'use
     <p>
       Just tell us your preferred login details, and your e-mail address.
       That's all we need.
+    </p>
+    <p>
+      Remember - <strong>do not use your Neopets password here!</strong>
+      We don't expect any security issues, but if anything happens, we want
+      there to be absolutely minimal risk.
     </p>
     <form action="<?php echo smarty_function_path(array('to' => 'signup'), $this);?>
 " method="POST">

@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2010-01-24 23:24:17
+<?php /* Smarty version 2.6.22, created on 2010-01-30 17:16:43
          compiled from users/welcome.tpl */ ?>
 <!DOCTYPE html>
 <html>

@@ -4,7 +4,8 @@ class OpenneoAuthServer {
   const remoteAuthorizePath = '/users/authorize';
   const sessionKey = 'openneo_auth_destination';
   const returnUrl = true;
-  private $config;
+  private $params;
+  private $initial_request;
   static $required_configs = array('valid_apps', 'secret');
   static $required_session_params = array('app', 'path', 'session_id');
   static $required_user_attributes = array('id', 'name');
@@ -25,27 +26,24 @@ class OpenneoAuthServer {
     return 'http://'.$session_data['app'].'.'.self::remoteBaseDomain;
   }
   
+  protected function getParams() {
+    if(!isset($this->params)) {
+      $this->params = $this->getSessionData();
+    }
+    return $this->params;
+  }
+  
   protected function getSessionData() {
     return $_SESSION[self::sessionKey];
   }
   
-  public function initSession($given_params) {
-    $params = array();
-    foreach(self::$required_session_params as $required_session_param) {
-      if(!isset($given_params[$required_session_param])) return false;
-      $params[$required_session_param] = $given_params[$required_session_param];
-    }
-    if(in_array($params['app'], $this->config['valid_apps'])) {
-      $this->setSessionData($params);
-      return true;
-    } else {
-      return false;
-    }
+  public function initSession() {
+    $this->setSessionData($this->getParams());
   }
   
   public function redirect($return_url=false) {
     $session_data = $this->getSessionData();
-    $path = $destination['path'];
+    $path = $session_data['path'];
     if(substr($path, 0, 1) != '/') $path = '/'.$path;
     $location = $this->getRemoteHost().$path;
     session_destroy();
@@ -58,7 +56,6 @@ class OpenneoAuthServer {
   }
   
   public function sendUserData($user_data) {
-    var_dump($user_data);
     foreach(self::$required_user_attributes as $required_user_attribute) {
       if(!isset($user_data[$required_user_attribute])) {
         throw new OpenneoAuth_MissingUserDataError(
@@ -85,14 +82,27 @@ class OpenneoAuthServer {
     $info = curl_getinfo($ch);
     if($info['http_code'] != 200) {
       throw new OpenneoAuth_RemoteAuthorizationError(
-        "$url returned status ${info['http_code']}"
+        "$url returned status ${info['http_code']}: '$data'"
       );
     }
-    die($data);
   }
   
   public function sessionExists() {
     return isset($_SESSION[self::sessionKey]);
+  }
+  
+  public function setParams($given_params) {
+    $params = array();
+    foreach(self::$required_session_params as $required_session_param) {
+      if(!isset($given_params[$required_session_param])) return false;
+      $params[$required_session_param] = $given_params[$required_session_param];
+    }
+    if(in_array($params['app'], $this->config['valid_apps'])) {
+      $this->params = $params;
+      return true;
+    } else {
+      return false;
+    }
   }
   
   protected function setSessionData($data) {
