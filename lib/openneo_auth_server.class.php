@@ -13,7 +13,7 @@ class OpenneoAuthServer {
   public function __construct($config) {
     foreach(self::$required_configs as $required_config) {
       if(!isset($config[$required_config])) {
-        throw new OpenneoAuth_MissingConfigException(
+        throw new OpenneoAuth_MissingConfigError(
           "Required OpenneoAuth config $required_config missing"
         );
       }
